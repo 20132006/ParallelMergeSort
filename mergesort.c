@@ -10,12 +10,46 @@ double start_time, stop_time;
 
 int* merge(int *A, int *B, int asize, int bsize) {
 	// TODO: fill in the code here to merge the sorted arrays
+	int *C;
+	int i=0;
+	int j=0;
+	int k=0;
+	C = (int *)malloc(asize+bsize);
+	while (i < asize && j<bsize)
+	{
+		if (A[i] < B[j])
+		{
+			C[k] = A[i];
+			++k;
+			++i;
+		}
+		else
+		{
+			C[k] = B[j];
+			++k;
+			++j;
+		}
+	}
+	while (i<asize)
+	{
+		C[k] = A[i];
+		++k;
+		++i;
+	}
+	while (j<bsize)
+	{
+		C[k] = B[j];
+		++k;
+		++j;
+	}
+	return C;
 }
 
 void mergesort(int *A, int min, int max)
 {
 	// TODO: fill in the code here to recursive divide the array
 	// into two halves, sort and merge them
+
 }
 
 int main(int argc, char **argv)
@@ -50,7 +84,7 @@ int main(int argc, char **argv)
 
 	start_time = clock();
 
-	// TODO: fill in the code here to 
+	// TODO: fill in the code here to
 	// (1) distribute the data across the processes
 	// (2) sort the data
 	// (3) merge sorted data
