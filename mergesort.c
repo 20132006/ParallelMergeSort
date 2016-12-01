@@ -165,11 +165,11 @@ int main(int argc, char **argv)
 		}
 		else{
 			for(i = 0; i < n - 1; i++){
-				cout<<sorted_data[i]<<" ";
+				printf("%d\n", sorted_data[i]);
 				//if(sorted_data[i] > sorted_data[i+1])
 				//	printf("error: sorted_data[%d] is greater than sorted_data[%d]\n",i,i+1);
 			}
-			cout<<endl;
+			printf("\n");
 		}
 	}
 	MPI_Finalize();
