@@ -137,7 +137,7 @@ int main(int argc, char **argv)
 				MPI_Recv(&m, 1 , MPI_INT,id+step,0,MPI_COMM_WORLD,&status);
 				sub_data1 = (int *)malloc(m*sizeof(int));
 				MPI_Recv(sub_data1,m,MPI_INT,id+step,0,MPI_COMM_WORLD,&status);
-				sub_data = merge(sub_data,pre_size,sub_data1,m);
+				sub_data = merge(sub_data,sub_data1, pre_size,m);
 				pre_size = pre_size + m;
 			}
 		}
