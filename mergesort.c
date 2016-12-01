@@ -33,14 +33,14 @@ int* merge(int *A, int *B, int asize, int bsize) {
 	while (i<asize)
 	{
 		C[k] = A[i];
-		++k;
-		++i;
+		k++;
+		i++;
 	}
 	while (j<bsize)
 	{
 		C[k] = B[j];
-		++k;
-		++j;
+		k++;
+		j++;
 	}
 	for (i=0;i<asize;i++)
 	{
@@ -67,12 +67,27 @@ void mergesort(int *A, int min, int max)
 	}
 }
 
+void print_(int *A, int n, int id)
+{
+	printf("%d\n", id);
+	for (i=0;i<n;i++)
+	{
+		printf("%d\n", A[i]);
+	}
+	putchar('\n');
+}
+
 int main(int argc, char **argv)
 {
 	int* data;
 	int* sorted_data;
 	int m, n, id, p, i, output;
-
+	//Added by Alibek-
+	int pre_size=0;
+	int *sub_data;
+	int *sub_data1;
+	int step;
+	//-----------------
 	MPI_Status status;
 
 	if (argc != 2) {
@@ -103,9 +118,7 @@ int main(int argc, char **argv)
 	// (1) distribute the data across the processes
 	// (2) sort the data
 	// (3) merge sorted data
-	int pre_size=0;
-	int *sub_data;
-	int step;
+
 	if(id==0)
 	{
 		pre_size = n/p;
@@ -113,7 +126,7 @@ int main(int argc, char **argv)
 		sub_data = (int *)malloc(pre_size*sizeof(int));
 		MPI_Scatter(data,pre_size,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
 		mergesort(sub_data, 0, pre_size-1);
-		/* showVector(chunk, s, id); */
+		print_(sub_data, pre_size, id);
 	}
 	else
 	{
@@ -121,11 +134,11 @@ int main(int argc, char **argv)
 		sub_data = (int *)malloc(pre_size*sizeof(int));
 		MPI_Scatter(data,pre_size,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
 		mergesort(sub_data, 0, pre_size-1);
-		/* showVector(chunk, s, id); */
+		showVector(sub_data, pre_size, id);
 	}
 
 	step = 1;
-	int *sub_data1;
+
 	while( step < p )
 	{
 		if(id % (2*step) == 0)
