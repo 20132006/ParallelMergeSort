@@ -42,6 +42,14 @@ int* merge(int *A, int *B, int asize, int bsize) {
 		++k;
 		++j;
 	}
+	for (i=0;i<asize;i++)
+	{
+		A[i] = C[i];
+	}
+	for (i=0;i<=bsize;i++)
+	{
+		B[i] = C[asize+i];
+	}
 	return C;
 }
 
@@ -89,15 +97,60 @@ int main(int argc, char **argv)
 			data[i] = random();
 	}
 
+	int Thight=0;
+	int numNode=1;
 	start_time = clock();
 
 	// TODO: fill in the code here to
 	// (1) distribute the data across the processes
 	// (2) sort the data
 	// (3) merge sorted data
-	int pre_size = n/p;
-	int *sub_data = malloc(size * sizeof(int));
-	MPI_Scatter(data, pre_size, MPI_INT, sub_data, pre_size, MPI_INT, 0, MPI_COMM_WORLD);
+	int pre_size=0;
+	int *sub_data;
+	int step;
+	if(id==0)
+	{
+		pre_size = n/p;
+		MPI_Bcast(&pre_size,1,MPI_INT,0,MPI_COMM_WORLD);
+		sub_data = (int *)malloc(s*sizeof(int));
+		MPI_Scatter(data,s,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
+		mergesort(sub_data, 0, pre_size-1);
+		/* showVector(chunk, s, id); */
+	}
+	else
+	{
+		MPI_Bcast(&pre_size,1,MPI_INT,0,MPI_COMM_WORLD);
+		chunk = (int *)malloc(s*sizeof(int));
+		MPI_Scatter(data,s,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
+		mergesort(sub_data, 0, pre_size-1);
+		/* showVector(chunk, s, id); */
+	}
+
+	int step = 1;
+	int m;
+	int *sub_data1;
+	while( step < p )
+	{
+		if(id % (2*step) == 0)
+		{
+			if( id+step < p )
+			{
+				MPI_Recv(&m, 1 , MPI_INT,id+step,0,MPI_COMM_WORLD,&status);
+				sub_data1 = (int *)malloc(m*sizeof(int));
+				MPI_Recv(sub_data1,m,MPI_INT,id+step,0,MPI_COMM_WORLD,&status);
+				chunk = merge(sub_data,s,other,m);
+				pre_size = pre_size + m;
+			}
+		}
+		else
+		{
+			int near = id-step;
+			MPI_Send(&pre_size,1,MPI_INT,near,0,MPI_COMM_WORLD);
+			MPI_Send(sub_data,pre_size,MPI_INT,near,0,MPI_COMM_WORLD);
+			break;
+		}
+		step = step*2;
+	}
 
 	stop_time = clock();
 
