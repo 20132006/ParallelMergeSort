@@ -70,7 +70,7 @@ void mergesort(int *A, int min, int max)
 void print_(int *A, int n, int id)
 {
 	printf("%d\n", id);
-	for (i=0;i<n;i++)
+	for (int i=0;i<n;i++)
 	{
 		printf("%d\n", A[i]);
 	}
