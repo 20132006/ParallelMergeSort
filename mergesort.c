@@ -153,7 +153,7 @@ int main(int argc, char **argv)
 
 	// Check correctness & print execution time
 	sorted_data = sub_data;
-	
+
 	if (id == 0)
 	{
 		FILE * fp;
@@ -165,9 +165,11 @@ int main(int argc, char **argv)
 		}
 		else{
 			for(i = 0; i < n - 1; i++){
-				if(sorted_data[i] > sorted_data[i+1])
-					printf("error: sorted_data[%d] is greater than sorted_data[%d]\n",i,i+1);
+				cout<<sorted_data[i]<<" ";
+				//if(sorted_data[i] > sorted_data[i+1])
+				//	printf("error: sorted_data[%d] is greater than sorted_data[%d]\n",i,i+1);
 			}
+			cout<<endl;
 		}
 	}
 	MPI_Finalize();
