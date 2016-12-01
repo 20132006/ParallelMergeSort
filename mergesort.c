@@ -152,6 +152,8 @@ int main(int argc, char **argv)
 	stop_time = clock();
 
 	// Check correctness & print execution time
+	sorted_data = sub_data;
+	
 	if (id == 0)
 	{
 		FILE * fp;
