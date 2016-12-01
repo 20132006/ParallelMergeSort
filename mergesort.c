@@ -49,7 +49,14 @@ void mergesort(int *A, int min, int max)
 {
 	// TODO: fill in the code here to recursive divide the array
 	// into two halves, sort and merge them
-
+	int mid;
+	if(min < max)
+	{
+		mid = (l + r)/2;
+		mergesort(A, min, mid);
+		mergesort(A, mid+1, max);
+		merge(A+min, mid-min+1, A+mid+1, max-mid);
+	}
 }
 
 int main(int argc, char **argv)
@@ -88,6 +95,9 @@ int main(int argc, char **argv)
 	// (1) distribute the data across the processes
 	// (2) sort the data
 	// (3) merge sorted data
+	int pre_size = n/p;
+	int *sub_data = malloc(size * sizeof(int));
+	MPI_Scatter(data, pre_size, MPI_INT, sub_data, pre_size, MPI_INT, 0, MPI_COMM_WORLD);
 
 	stop_time = clock();
 
