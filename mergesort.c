@@ -60,10 +60,10 @@ void mergesort(int *A, int min, int max)
 	int mid;
 	if(min < max)
 	{
-		mid = (l + r)/2;
+		mid = (min + max)/2;
 		mergesort(A, min, mid);
 		mergesort(A, mid+1, max);
-		merge(A+min, mid-min+1, A+mid+1, max-mid);
+		merge(A+min, A+min+1, mid-min+1, max-mid);
 	}
 }
 
@@ -112,22 +112,21 @@ int main(int argc, char **argv)
 	{
 		pre_size = n/p;
 		MPI_Bcast(&pre_size,1,MPI_INT,0,MPI_COMM_WORLD);
-		sub_data = (int *)malloc(s*sizeof(int));
-		MPI_Scatter(data,s,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
+		sub_data = (int *)malloc(pre_size*sizeof(int));
+		MPI_Scatter(data,pre_size,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
 		mergesort(sub_data, 0, pre_size-1);
 		/* showVector(chunk, s, id); */
 	}
 	else
 	{
 		MPI_Bcast(&pre_size,1,MPI_INT,0,MPI_COMM_WORLD);
-		chunk = (int *)malloc(s*sizeof(int));
-		MPI_Scatter(data,s,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
+		sub_data = (int *)malloc(pre_size*sizeof(int));
+		MPI_Scatter(data,pre_size,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
 		mergesort(sub_data, 0, pre_size-1);
 		/* showVector(chunk, s, id); */
 	}
 
-	int step = 1;
-	int m;
+	step = 1;
 	int *sub_data1;
 	while( step < p )
 	{
@@ -138,7 +137,7 @@ int main(int argc, char **argv)
 				MPI_Recv(&m, 1 , MPI_INT,id+step,0,MPI_COMM_WORLD,&status);
 				sub_data1 = (int *)malloc(m*sizeof(int));
 				MPI_Recv(sub_data1,m,MPI_INT,id+step,0,MPI_COMM_WORLD,&status);
-				chunk = merge(sub_data,s,other,m);
+				sub_data = merge(sub_data,pre_size,sub_data1,m);
 				pre_size = pre_size + m;
 			}
 		}
