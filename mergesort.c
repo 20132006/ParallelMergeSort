@@ -14,6 +14,16 @@ int* merge(int *A, int *B, int asize, int bsize) {
 	int i=0;
 	int j=0;
 	int k=0;
+	/*
+	for (i=0;i<asize;i++)
+		printf("%d| ", A[i]);
+	putchar('\n');
+	for (i=0;i<bsize;i++)
+		printf("%d, ", B[i]);
+	putchar('\n');
+
+	i=0;j=0;k=0;
+	*/
 	C = (int *)malloc((asize+bsize)*sizeof(int));
 	while (i < asize && j<bsize)
 	{
@@ -50,6 +60,11 @@ int* merge(int *A, int *B, int asize, int bsize) {
 	{
 		B[i] = C[asize+i];
 	}
+	/*
+	for (i=0;i<k;i++)
+		printf("%d/ \n", C[i]);
+	putchar('\n');
+	*/
 	return C;
 }
 
@@ -58,24 +73,19 @@ void mergesort(int *A, int min, int max)
 	// TODO: fill in the code here to recursive divide the array
 	// into two halves, sort and merge them
 	int mid;
+	int i;
+	//for (i=min;i<=max;i++)
+	//	printf("%d, ", A[i]);
+	//putchar('\n');
+	//printf("mid max %d %d \n", min, max);
 	if(min < max)
 	{
 		mid = (min + max)/2;
 		mergesort(A, min, mid);
 		mergesort(A, mid+1, max);
-		merge(A+min, A+min+1, mid-min+1, max-mid);
+	//	printf("min min max %d %d %d\n", min, mid, max);
+		merge(A+min, A+mid+1, mid-min+1, max-mid);
 	}
-}
-
-void print_(int *A, int n, int id)
-{
-	int i;
-	printf("%d\n", id);
-	for (i=0;i<n;i++)
-	{
-		printf("%d\n", A[i]);
-	}
-	putchar('\n');
 }
 
 int main(int argc, char **argv)
@@ -102,9 +112,10 @@ int main(int argc, char **argv)
 	MPI_Init(&argc, &argv);
 	MPI_Comm_rank(MPI_COMM_WORLD, &id);
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
-
+	printf("%d\n", p);
 	if(id==0)
 	{
+		pre_size = n/p;
 		// data generation
 		srandom(0);
 		// Make sure that n is a multiple of p
@@ -122,12 +133,10 @@ int main(int argc, char **argv)
 
 	if(id==0)
 	{
-		pre_size = n/p;
 		MPI_Bcast(&pre_size,1,MPI_INT,0,MPI_COMM_WORLD);
 		sub_data = (int *)malloc(pre_size*sizeof(int));
 		MPI_Scatter(data,pre_size,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
 		mergesort(sub_data, 0, pre_size-1);
-		print_(sub_data, pre_size, id);
 	}
 	else
 	{
@@ -135,7 +144,6 @@ int main(int argc, char **argv)
 		sub_data = (int *)malloc(pre_size*sizeof(int));
 		MPI_Scatter(data,pre_size,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
 		mergesort(sub_data, 0, pre_size-1);
-		print_(sub_data, pre_size, id);
 	}
 
 	step = 1;
@@ -179,9 +187,9 @@ int main(int argc, char **argv)
 		}
 		else{
 			for(i = 0; i < n - 1; i++){
-				printf("%d\n", sorted_data[i]);
-				//if(sorted_data[i] > sorted_data[i+1])
-				//	printf("error: sorted_data[%d] is greater than sorted_data[%d]\n",i,i+1);
+				//printf("%d\n", sorted_data[i]);
+				if(sorted_data[i] > sorted_data[i+1])
+					printf("error: sorted_data[%d] is greater than sorted_data[%d]\n",i,i+1);
 			}
 			printf("\n");
 		}
