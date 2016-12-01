@@ -14,20 +14,20 @@ int* merge(int *A, int *B, int asize, int bsize) {
 	int i=0;
 	int j=0;
 	int k=0;
-	C = (int *)malloc(asize+bsize);
+	C = (int *)malloc((asize+bsize)*sizeof(int));
 	while (i < asize && j<bsize)
 	{
 		if (A[i] < B[j])
 		{
 			C[k] = A[i];
-			++k;
-			++i;
+			k++;
+			i++;
 		}
 		else
 		{
 			C[k] = B[j];
-			++k;
-			++j;
+			k++;
+			j++;
 		}
 	}
 	while (i<asize)
@@ -46,7 +46,7 @@ int* merge(int *A, int *B, int asize, int bsize) {
 	{
 		A[i] = C[i];
 	}
-	for (i=0;i<=bsize;i++)
+	for (i=0;i<bsize;i++)
 	{
 		B[i] = C[asize+i];
 	}
@@ -97,8 +97,6 @@ int main(int argc, char **argv)
 			data[i] = random();
 	}
 
-	int Thight=0;
-	int numNode=1;
 	start_time = clock();
 
 	// TODO: fill in the code here to
