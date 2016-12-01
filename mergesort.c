@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 		sub_data = (int *)malloc(pre_size*sizeof(int));
 		MPI_Scatter(data,pre_size,MPI_INT,sub_data,pre_size,MPI_INT,0,MPI_COMM_WORLD);
 		mergesort(sub_data, 0, pre_size-1);
-		showVector(sub_data, pre_size, id);
+		print_(sub_data, pre_size, id);
 	}
 
 	step = 1;
