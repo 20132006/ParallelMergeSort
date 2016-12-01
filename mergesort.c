@@ -69,8 +69,9 @@ void mergesort(int *A, int min, int max)
 
 void print_(int *A, int n, int id)
 {
+	int i;
 	printf("%d\n", id);
-	for (int i=0;i<n;i++)
+	for (i=0;i<n;i++)
 	{
 		printf("%d\n", A[i]);
 	}
