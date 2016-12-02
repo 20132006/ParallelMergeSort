@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 	}
 
 	level = 1;
-/*
+
 	while( level < p )
 	{
 		if(id % (2*level) == 0)
@@ -170,26 +170,7 @@ int main(int argc, char **argv)
 		}
 		level = level*2;
 	}
-*/
-	while( level < p )
-	{
-		if(id == 0)
-		{
-			MPI_Recv(&m, 1 , MPI_INT,MPI_ANY_SOURCE,0,MPI_COMM_WORLD,&status);
-			sub_data1 = (int *)malloc(m*sizeof(int));
-			MPI_Recv(sub_data1,m,MPI_INT,MPI_ANY_SOURCE,0,MPI_COMM_WORLD,&status);
-			sub_data = merge(sub_data,sub_data1, pre_size,m);
-			pre_size = pre_size + m;
-		}
-		else
-		{
-			int neighborhood = 0;
-			MPI_Send(&pre_size,1,MPI_INT,neighborhood,0,MPI_COMM_WORLD);
-			MPI_Send(sub_data,pre_size,MPI_INT,neighborhood,0,MPI_COMM_WORLD);
-			break;
-		}
-		level++;
-	}
+
 	stop_time = clock();
 
 	// Check correctness & print execution time
