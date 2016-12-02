@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 	int pre_size=0;
 	int *sub_data;
 	int *sub_data1;
-	int step;
+	int level;
 	//-----------------
 	MPI_Status status;
 
@@ -146,31 +146,50 @@ int main(int argc, char **argv)
 		mergesort(sub_data, 0, pre_size-1);
 	}
 
-	step = 1;
-
-	while( step < p )
+	level = 1;
+/*
+	while( level < p )
 	{
-		if(id % (2*step) == 0)
+		if(id % (2*level) == 0)
 		{
-			if( id+step < p )
+			if( id+level < p )
 			{
-				MPI_Recv(&m, 1 , MPI_INT,id+step,0,MPI_COMM_WORLD,&status);
+				MPI_Recv(&m, 1 , MPI_INT,id+level,0,MPI_COMM_WORLD,&status);
 				sub_data1 = (int *)malloc(m*sizeof(int));
-				MPI_Recv(sub_data1,m,MPI_INT,id+step,0,MPI_COMM_WORLD,&status);
+				MPI_Recv(sub_data1,m,MPI_INT,id+level,0,MPI_COMM_WORLD,&status);
 				sub_data = merge(sub_data,sub_data1, pre_size,m);
 				pre_size = pre_size + m;
 			}
 		}
 		else
 		{
-			int near = id-step;
-			MPI_Send(&pre_size,1,MPI_INT,near,0,MPI_COMM_WORLD);
-			MPI_Send(sub_data,pre_size,MPI_INT,near,0,MPI_COMM_WORLD);
+			int neighborhood = id-level;
+			MPI_Send(&pre_size,1,MPI_INT,neighborhood,0,MPI_COMM_WORLD);
+			MPI_Send(sub_data,pre_size,MPI_INT,neighborhood,0,MPI_COMM_WORLD);
 			break;
 		}
-		step = step*2;
+		level = level*2;
 	}
-
+*/
+	while( level < p )
+	{
+		if(id == 0)
+		{
+			MPI_Recv(&m, 1 , MPI_INT,MPI_ANY_SOURCE,0,MPI_COMM_WORLD,&status);
+			sub_data1 = (int *)malloc(m*sizeof(int));
+			MPI_Recv(sub_data1,m,MPI_INT,MPI_ANY_SOURCE,0,MPI_COMM_WORLD,&status);
+			sub_data = merge(sub_data,sub_data1, pre_size,m);
+			pre_size = pre_size + m;
+		}
+		else
+		{
+			int neighborhood = 0;
+			MPI_Send(&pre_size,1,MPI_INT,neighborhood,0,MPI_COMM_WORLD);
+			MPI_Send(sub_data,pre_size,MPI_INT,neighborhood,0,MPI_COMM_WORLD);
+			break;
+		}
+		level++;
+	}
 	stop_time = clock();
 
 	// Check correctness & print execution time
