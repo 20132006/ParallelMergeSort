@@ -1,8 +1,6 @@
-/** \CSE412 Assignment_1
- *  \author Jaeyoung Yun
- *  \sinsunby@unist.ac.kr
-    \modified Kyu Yeun Kim
-    \kyuyeunk@unist.ac.kr
+/** \CSE412 Assignment_2
+ *  \author Alibek Taalaibek uulu
+ *  \alibek@unist.ac.kr
  */
 
 0. How to access the Ferrari cluster
@@ -11,7 +9,7 @@
     - Host Name: ferrari.unist.ac.kr
     - Account / Pwd: refer to BB announcements
 
-1. Complete the unfinished code, hashtable.c
+1. Complete the unfinished code, mergesort.c
 
 2. $ make
 
@@ -21,23 +19,19 @@
 
     - In your local machine.
 
-    - run hashtable with 5 arguments. (make sure that the second argument does not exceed 131072 operations)
+    - run mergesort with 1 arguments. (make sure that the argument is divisible by "p" #proc)
 
-    - $ ./hashtable (number of buckets) (number of operations) (number of threads) (probability of insert) (probability of delete)
+    - $ ./mergesort (number of data to sort)
 
     (2) cluster evaluation
 
     - In Ferrari cluster
 
-    - use qsub to submit your job to cluster.
+    - use bash to submit your job to cluster.
 
-    - $ qsub -l nodes=1:ppn=16 hash_table_(#)_(#)_(#).pbs
+    - $ bash submit_jobs.sh
 
-    : You should qsub four .pbs files. First number means
-    number of buckets, second number is probability of insert,
-    and third number means probability of delete
-    (You have to change the hashtable PATH in script file)
-    (e.g. /home/sinsunby/ -> /home/"$Account")
+    : After completing, you should get five .e and .o files.
 
     - You can track your job process by $ qstat
 
